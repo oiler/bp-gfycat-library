@@ -15,24 +15,9 @@ var gfyCollection = function () {
 
     var collection = [];
 
-    // Helper function -- only required because some browsers do not have get by class name
-    function byClass(className, obj) {
-
-        if (obj.getElementsByClassName) {
-            return obj.getElementsByClassName(className);
-        } else {
-            var retnode = [];
-            var elem = obj.getElementsByTagName('*');
-            for (var i = 0; i < elem.length; i++) {
-                if ((' ' + elem[i].className + ' ').indexOf(' ' + className + ' ') > -1) retnode.push(elem[i]);
-            }
-            return retnode;
-        }
-    }
-
     function init() {
         // find each gfycat on page and run its init
-        elem_coll = byClass("gfyitem", document);
+        elem_coll = document.getElementsByClassName("gfyitem");
         for (var i = 0; i < elem_coll.length; i++) {
             var gfyObj = new gfyObject(elem_coll[i]);
             collection.push(gfyObj);
@@ -88,21 +73,6 @@ var gfyObject = function (gfyElem) {
     var gfyItem;
     var gfyWidth;
     var gfyHeight;
-
-
-    // Helper function -- only required because some browsers do not have get by class name
-    function byClass(className, obj) {
-        if (obj.getElementsByClassName) {
-            return obj.getElementsByClassName(className);
-        } else {
-            var retnode = [];
-            var elem = obj.getElementsByTagName('*');
-            for (var i = 0; i < elem.length; i++) {
-                if ((' ' + elem[i].className + ' ').indexOf(' ' + className + ' ') > -1) retnode.push(elem[i]);
-            }
-            return retnode;
-        }
-    }
 
     function createTitle() {
         titleDiv = document.createElement('div');
@@ -512,8 +482,8 @@ var gfyObject = function (gfyElem) {
         ctrlSlower.onclick = stepBackward;
         vid.pause();
         // Swap video source tags for reverse encoded files
-        var mp4src = byClass("mp4source", vid)[0];
-        var webmsrc = byClass("webmsource", vid)[0];
+        var mp4src = vid.getElementsByClassName("mp4source")[0];
+        var webmsrc = vid.getElementsByClassName("webmsource")[0];
         if (isReverse) {
             mp4src.src = mp4src.src.replace(/-reverse\.mp4/g, ".mp4");
             mp4src.src = mp4src.src.replace(/-reverse\.webm/g, ".webm");
