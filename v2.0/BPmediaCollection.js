@@ -11,7 +11,11 @@
  * and re-initialize them or interact with them
  * as desired.
  */
-var BPmediaCollection = function () {
+
+var BPmediaCollection = window.BPmediaCollection || [];
+var BPmediaObject = window.BPmediaObject || [];
+
+BPmediaCollection = function () {
 
     var collection = [];
 
@@ -51,7 +55,7 @@ var BPmediaCollection = function () {
  * for interacting with its own gfycat video.
  */
 
-var BPmediaObject = function (params) {
+BPmediaObject = function (params) {
     var params = (typeof params === 'object') ? params : {};
 
     if (params.mediaType === 'mlbtv') {
