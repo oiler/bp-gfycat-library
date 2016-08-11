@@ -72,6 +72,7 @@ var gfyObject = function (gfyElem) {
     var optCtrls; // Option: add controls to bottom right corner
     var optAutoplay = true; // Option: automatically play video when loaded
     // references to each html element
+    var optMouseOver = true; // Option: control video via mouseover or click
     var ctrlBox;
     var ctrlPausePlay;
     var ctrlSlower;
@@ -133,9 +134,12 @@ var gfyObject = function (gfyElem) {
         overlayCanvas.style.position = "absolute";
         overlayCanvas.style.left = "0";
         overlayCanvas.style.top = "0";
-         overlayCanvas.onmouseover = pauseClick;
+        if (optMouseOver === true) {
+            overlayCanvas.onmouseover = pauseClick;
             overlayCanvas.onmouseout = pauseClick;
-
+        } else if (optMouseOver === false) {
+            overlayCanvas.onclick = pauseClick;
+        }
         gfyRootElem.appendChild(overlayCanvas);
     }
 
@@ -268,6 +272,9 @@ var gfyObject = function (gfyElem) {
             optCtrls = true;
         if (gfyRootElem.getAttribute('data-autoplay') == "false")
             optAutoplay = false;
+        if (gfyRootElem.getAttribute('data-mouseOver') == "false")
+            optMouseOver = false;
+
         var newElem = document.createElement('div');
         attrib_src = gfyRootElem.attributes;
         attrib_dest = newElem.attributes;
