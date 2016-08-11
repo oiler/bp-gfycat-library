@@ -1,26 +1,29 @@
 /*
- * gfyCollection:
+ * BPmediaCollection:
  * Global object to be called on page load.
  * This runs through the page DOM for elements
  * with class "gfyitem" and attempts to convert
  * them to gfycat embeds by creating a new
- * gfyObject with the element.
+ * BPmediaObject with the element.
  * Can also be used _after_ page load
- * by calling gfyCollection.get() to get
+ * by calling BPmediaCollection.get() to get
  * the collection of gfycat objects on the page
  * and re-initialize them or interact with them
  * as desired.
  */
-var gfyCollection = function () {
+var BPmediaCollection = function () {
 
     var collection = [];
 
     function init() {
         // find each gfycat on page and run its init
-        elem_coll = document.getElementsByClassName("gfyitem");
+        elem_coll = document.getElementsByClassName("bpmc_item");
         for (var i = 0; i < elem_coll.length; i++) {
-            var gfyObj = new gfyObject(elem_coll[i]);
-            collection.push(gfyObj);
+            var BPmediaObj = new BPmediaObject({ 
+                element: elem_coll[i],
+                mediaType: elem_coll[i].getAttribute('data-mediaType')
+            });
+            collection.push(BPmediaObj);
         }
         for(var i = 0; i < collection.length; i++) {
             collection[i].init();
@@ -41,15 +44,63 @@ var gfyCollection = function () {
 }();
 
 /*
- * A new gfyObject is created for each 
+ * A new BPmediaObject is created for each 
  * gfycat embed on the page.  This object
  * creates all video/control elements 
  * and is self-contained with all functions 
  * for interacting with its own gfycat video.
  */
 
-var gfyObject = function (gfyElem) {
-    var gfyRootElem = gfyElem;
+var BPmediaObject = function (params) {
+    var params = (typeof params === 'object') ? params : {};
+
+    if (params.mediaType === 'mlbtv') {
+
+        function getBrowserWidth() {
+            var d= document, root= d.documentElement, body= d.body;
+            var wid= window.innerWidth || root.clientWidth || body.clientWidth;
+            return wid;
+        };
+
+        function getElementForVideo(mlbtv_video_id) {
+            var mlbtvElement = params.element;
+            var iframe = document.createElement('iframe');
+            var windowWidth = getBrowserWidth();
+            var videoWidth, videoHeight;
+            if (windowWidth > 700) {
+                videoWidth = 635;
+                videoHeight = 355;
+            } else {
+                videoWidth = 320;
+                videoHeight = 180;
+                // ratio is 1.78571428571429
+            }
+            iframe.src = "http://m.mlb.com/shared/video/embed/embed.html?content_id=" + mlbtv_video_id + "&width=" + videoWidth + "&height=" + videoHeight +"&property=mlb";
+            iframe.width = videoWidth;
+            iframe.height = videoHeight;
+            iframe.frameborder = 0;
+            
+            mlbtvElement.appendChild(iframe);
+
+        };
+
+        function init() {
+            var mlbtv_video_id;
+            mlbtv_video_id = params.element.getAttribute('data-id');
+            if (mlbtv_video_id) { 
+                getElementForVideo(mlbtv_video_id);
+            }
+        };
+
+        return {
+            mediaType: params.mediaType,
+            init: init
+        }
+    } // end mlbtv
+
+    if (params.mediaType === 'gfycat') {
+
+    var gfyRootElem = params.element;
     var gfyId;
     // Options are set by data- attributes on tag
     var optExpand; // Option: will video grow to fill space
@@ -540,12 +591,15 @@ var gfyObject = function (gfyElem) {
     }
 
     return {
+        mediaType: params.mediaType,
         init: init,
         refresh: refresh
     }
+    } // end gfycat
 }
 
-if(document.addEventListener)
-    document.addEventListener("DOMContentLoaded",gfyCollection.init,false);
-else
-    document.attachEvent("onreadystatechange",gfyCollection.init);
+if (document.addEventListener) {
+    document.addEventListener("DOMContentLoaded", BPmediaCollection.init, false);
+} else {
+    document.attachEvent("onreadystatechange", BPmediaCollection.init);
+}
