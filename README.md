@@ -15,5 +15,15 @@ From the original docs:
 
 > data-id: Important! This will be the id in the url of the gfycat you uploaded. For example, this particular gfycat was http://gfycat.com/RingedSereneHypacrosaurus
 
+## Version 1.1
+Before embarking on the fork of this library, we added in the functionality Nick had in the "test" file to allow for the gif to be played by mouseOver or click - as determined by an additional (and optional) data attribute. Default value is set to use mouseOver.
+
+So update usage is as follows:
+```
+<div class="gfyitem" data-mouseOver="true" data-autoplay="false" data-controls="false" data-expand="false" data-id="RingedSereneHypacrosaurus" data-title="true"></div>
+```
+
+This functionality is available in the [1.1 version](https://github.com/oiler/bp-gfycat-library/tree/master/v1.1) of gfycat.js.
+
 ## Example
-See example.html for basic usage
+See example.html for basic usage.
